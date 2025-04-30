@@ -1,0 +1,103 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+using Fusion;//IMPORTANT!
+using Fusion.Sockets;//IMPORTANT!
+
+public class ServerManager : MonoBehaviour, INetworkRunnerCallbacks
+{
+    [SerializeField] GameObject NetworkRunnerPrefab;
+    public static NetworkRunner NetworkRunner;
+    [SerializeField] GameObject BlockPrefab;//NEW CODE
+
+    void Start()
+    {
+        NetworkRunner = Instantiate(NetworkRunnerPrefab).GetComponent<NetworkRunner>();//Creating Network Runner
+        NetworkRunner.AddCallbacks(this);
+        NetworkRunner.StartGame(new StartGameArgs() //Connecting to the server and the session
+        {
+            GameMode = GameMode.Shared,
+            SessionName = "GLOBAL SERVER",
+            SceneManager = NetworkRunner.GetComponent<INetworkSceneManager>(),
+            IsOpen = true,
+            PlayerCount = 3,
+
+
+        });
+        Screen.SetResolution(800, 450, false);//Just setting the resolution
+        Application.targetFrameRate = 120;//Fps set to 120
+    }
+
+    public void OnConnectedToServer(NetworkRunner runner)
+    {
+        print("Connected to server!");
+    }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+        print("Connected to session!");
+        if (player == NetworkRunner.LocalPlayer)                                                         
+        {                                                                                                
+            var myBlock = NetworkRunner.Spawn(BlockPrefab, Vector3.zero, Quaternion.identity);
+            myBlock.GetComponent<MoveCube>().IsLocalBlock = true;                                        
+            myBlock.GetComponent<MoveCube>().SetLocalPlayerProperties();                                 //NEW CODE
+        }                                                                                                
+    }
+
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+    {
+    }
+
+    public void OnInput(NetworkRunner runner, NetworkInput input)
+    {
+    }
+
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
+    {
+    }
+
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    {
+    }
+
+
+    public void OnDisconnectedFromServer(NetworkRunner runner)
+    {
+    }
+
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+    }
+
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    {
+    }
+
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
+    {
+    }
+
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+    {
+    }
+
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
+    {
+    }
+
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
+    {
+    }
+
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)
+    {
+    }
+
+    public void OnSceneLoadDone(NetworkRunner runner)
+    {
+    }
+
+    public void OnSceneLoadStart(NetworkRunner runner)
+    {
+    }
+}
