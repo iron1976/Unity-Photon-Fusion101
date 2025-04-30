@@ -1,0 +1,33 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MoveCube : MonoBehaviour
+{
+    [SerializeField] float speed = 7f;
+    public bool IsLocalBlock; 
+    void Update()
+    {
+        if (!IsLocalBlock)
+            return;
+        if (Input.GetKey(KeyCode.W))
+            this.transform.position += new Vector3(0, 0, speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.A))
+            this.transform.position += new Vector3(-speed * Time.deltaTime, 0, 0);
+
+        if (Input.GetKey(KeyCode.S))
+            this.transform.position += new Vector3(0, 0, -speed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.D))
+            this.transform.position += new Vector3(speed * Time.deltaTime, 0, 0);
+
+
+        if (Input.GetKey(KeyCode.UpArrow))
+            speed += 0.1f;
+
+        if (Input.GetKey(KeyCode.DownArrow))
+            speed -= 0.1f;
+
+    }
+}
